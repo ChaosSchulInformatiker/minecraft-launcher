@@ -136,13 +136,9 @@ export function NoRiskModsTab({
   }, []);
 
   useEffect(() => {
-    if (profile.selected_norisk_pack_id && noriskPacksConfig) {
-      fetchNoriskMods();
-    } else {
-      setNoriskMods([]);
-      setIsLoading(false);
-    }
-  }, [profile.id, profile.selected_norisk_pack_id, noriskPacksConfig]);
+    setNoriskMods([]);
+    setIsLoading(false);
+  }, [profile.id, noriskPacksConfig]);
 
   const fetchNoriskPacks = async () => {
     try {
@@ -163,107 +159,12 @@ export function NoRiskModsTab({
   };
 
   const fetchNoriskMods = async () => {
-    if (!profile.selected_norisk_pack_id) {
-      setNoriskMods([]);
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      try {
-        const modsResult = await invoke<any>("get_norisk_pack_mods", {
-          packId: profile.selected_norisk_pack_id,
-          gameVersion: profile.game_version,
-          loader: profile.loader,
-        });
-
-        if (modsResult && Array.isArray(modsResult)) {
-          processFetchedMods(modsResult);
-        } else if (
-          modsResult &&
-          modsResult.mods &&
-          Array.isArray(modsResult.mods)
-        ) {
-          processFetchedMods(modsResult.mods);
-        } else {
-          throw new Error("Unexpected response format from backend");
-        }
-      } catch (directError) {
-        const packDef =
-          noriskPacksConfig?.packs[profile.selected_norisk_pack_id];
-        if (!packDef) {
-          setError(
-            `NoRisk pack "${profile.selected_norisk_pack_id}" not found. Try refreshing the packs.`,
-          );
-          setIsLoading(false);
-          return;
-        }
-
-        if (
-          !packDef.mods ||
-          !Array.isArray(packDef.mods) ||
-          packDef.mods.length === 0
-        ) {
-          try {
-            const lastResortResult = await invoke<any>("list_norisk_mods", {
-              profileId: profile.id,
-            });
-
-            if (lastResortResult && Array.isArray(lastResortResult)) {
-              processFetchedMods(lastResortResult);
-            } else if (
-              lastResortResult &&
-              lastResortResult.mods &&
-              Array.isArray(lastResortResult.mods)
-            ) {
-              processFetchedMods(lastResortResult.mods);
-            } else {
-              setError(
-                "Could not load NoRisk mods. No mods found in pack definition.",
-              );
-              setNoriskMods([]);
-            }
-          } catch (lastResortError) {
-            setError(
-              `Failed to load NoRisk mods: ${
-                lastResortError instanceof Error
-                  ? lastResortError.message
-                  : String(lastResortError)
-              }`,
-            );
-            setNoriskMods([]);
-          }
-        } else {
-          processFetchedMods(packDef.mods);
-        }
-      }
-    } catch (error) {
-      setError(
-        `Failed to load NoRisk mods: ${error instanceof Error ? error.message : String(error)}`,
-      );
-    } finally {
-      setIsLoading(false);
-    }
+    setNoriskMods([]);
+    setIsLoading(false);
   };
 
   const isNoriskModDisabled = (packModId: string): boolean => {
-    if (
-      !profile.selected_norisk_pack_id ||
-      !profile.disabled_norisk_mods_detailed
-    ) {
-      return false;
-    }
-
-    return profile.disabled_norisk_mods_detailed.some(
-      (identifier) =>
-        identifier.pack_id === profile.selected_norisk_pack_id &&
-        identifier.mod_id === packModId &&
-        identifier.game_version === profile.game_version &&
-        identifier.loader === profile.loader,
-    );
+    return false;
   };
 
   const processFetchedMods = async (mods: any[]) => {
@@ -326,36 +227,6 @@ export function NoRiskModsTab({
       }
     } catch (error) {
       console.error("Failed to fetch mod icons:", error);
-    }
-  };
-
-  const handleToggleMod = async (modId: string) => {
-    if (!profile.selected_norisk_pack_id) return;
-
-    try {
-      const mod = noriskMods.find((m) => m.id === modId);
-      if (!mod) return;
-
-      const newEnabledState = !mod.enabled;
-
-      await invoke("set_norisk_mod_status", {
-        profileId: profile.id,
-        packId: profile.selected_norisk_pack_id,
-        modId: modId,
-        gameVersion: profile.game_version,
-        loaderStr: profile.loader,
-        disabled: !newEnabledState,
-      });
-
-      setNoriskMods(
-        noriskMods.map((m) =>
-          m.id === modId ? { ...m, enabled: newEnabledState } : m,
-        ),
-      );
-    } catch (error) {
-      setError(
-        `Failed to toggle mod: ${error instanceof Error ? error.message : String(error)}`,
-      );
     }
   };
 
@@ -432,15 +303,9 @@ export function NoRiskModsTab({
     return sortDirection === "asc" ? comparison : -comparison;
   });
 
-  const currentPackName = profile.selected_norisk_pack_id
-    ? noriskPacksConfig?.packs[profile.selected_norisk_pack_id]?.displayName ||
-      "Unknown Pack"
-    : "No Pack Selected";
+  const currentPackName = "No Pack Selected";
 
-  const isExperimental = profile.selected_norisk_pack_id
-    ? noriskPacksConfig?.packs[profile.selected_norisk_pack_id]
-        ?.isExperimental || false
-    : false;
+  const isExperimental = false;
 
   return (
     <div ref={containerRef} className="h-full flex flex-col select-none p-4">
@@ -516,75 +381,17 @@ export function NoRiskModsTab({
           borderColor: `${accentColor.value}20`,
         }}
       >
-        {!profile.selected_norisk_pack_id ? (
-          <div className="h-full flex items-center justify-center">
-            <div className="text-center">
-              <Logo size="md" className="mx-auto mb-4" />
-              <p className="text-white/60 font-minecraft text-xl tracking-wide lowercase select-none">
-                no norisk pack selected
-              </p>
-              <p className="text-white/40 font-minecraft text-sm mt-2 tracking-wide lowercase select-none">
-                select a norisk pack in profile settings
-              </p>
-            </div>
+        <div className="h-full flex items-center justify-center">
+          <div className="text-center">
+            <Logo size="md" className="mx-auto mb-4"/>
+            <p className="text-white/60 font-minecraft text-xl tracking-wide lowercase select-none">
+              no norisk pack selected
+            </p>
+            <p className="text-white/40 font-minecraft text-sm mt-2 tracking-wide lowercase select-none">
+              select a norisk pack in profile settings
+            </p>
           </div>
-        ) : isLoading ? (
-          <LoadingState message="loading norisk mods..." />
-        ) : error ? (
-          <ErrorMessage message={error} />
-        ) : (
-          <ContentTable
-            headers={[
-              {
-                key: "name",
-                label: "norisk mod name",
-                sortable: true,
-                width: "flex-1",
-                className: "px-3",
-              },
-              {
-                key: "enabled",
-                label: "status",
-                sortable: true,
-                width: "w-16",
-                className: "text-center",
-              },
-            ]}
-            sortKey={sortBy}
-            sortDirection={sortDirection}
-            onSort={handleSort}
-            selectedCount={selectedMods.size}
-            totalCount={noriskMods.length}
-            filteredCount={filteredMods.length}
-            enabledCount={filteredMods.filter((m) => m.enabled).length}
-            onSelectAll={handleSelectAll}
-            contentType="norisk mod"
-            searchQuery={effectiveSearchQuery}
-          >
-            {sortedMods.length > 0 ? (
-              sortedMods.map((mod) => (
-                <NoRiskModRow
-                  key={mod.id}
-                  mod={mod}
-                  isSelected={selectedMods.has(mod.id)}
-                  onSelect={() => handleSelectMod(mod.id)}
-                  onToggle={() => handleToggleMod(mod.id)}
-                  localIcon={localIcons[mod.id]}
-                />
-              ))
-            ) : (
-              <EmptyState
-                icon="solar:shield-bold"
-                message={
-                  effectiveSearchQuery
-                    ? "no mods match your search"
-                    : "no norisk mods available"
-                }
-                description="NoRisk mods are automatically managed by the launcher"
-              />
-            )}
-          </ContentTable>
-        )}
+        </div>
       </div>
     </div>
   );

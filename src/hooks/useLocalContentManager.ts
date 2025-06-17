@@ -371,7 +371,7 @@ export function useLocalContentManager<T extends LocalContentItem>({
   useEffect(() => {
     fetchBasicInfo();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchBasicInfo, profile?.selected_norisk_pack_id]); // Added profile.selected_norisk_pack_id to ensure refetch on pack change
+  }, [fetchBasicInfo]); // Added profile.selected_norisk_pack_id to ensure refetch on pack change
   
   // Phase 2: Trigger Fetch Hashes (for all content types)
   useEffect(() => {

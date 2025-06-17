@@ -93,11 +93,8 @@ export function ProfileSettings({ profile, onClose }: ProfileSettingsProps) {
         loader: editedProfile.loader,
         loader_version: editedProfile.loader_version || null || undefined,
         settings: editedProfile.settings,
-        selected_norisk_pack_id:
-          editedProfile.selected_norisk_pack_id || null || undefined,
         group: editedProfile.group,
         description: editedProfile.description,
-        norisk_information: editedProfile.norisk_information,
       });
 
       toast.success("Profile saved successfully!");

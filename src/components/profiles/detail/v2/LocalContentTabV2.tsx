@@ -227,11 +227,9 @@ export function LocalContentTabV2<T extends LocalContentItem>({
 
   const handleSelectedPackChange = useCallback(
     async (newPackId: string | null) => {
-      if (!profile || newPackId === profile.selected_norisk_pack_id) return;
+      if (!profile) return;
       try {
         await ProfileService.updateProfile(profile.id, {
-          selected_norisk_pack_id: newPackId,
-          clear_selected_norisk_pack: newPackId === null,
         });
         if (onRefreshRequired) {
           onRefreshRequired();
@@ -1065,79 +1063,51 @@ export function LocalContentTabV2<T extends LocalContentItem>({
               </Button>
             )}
 
-            {/* NoRisk Pack Selector - Only for NoRiskMod type */}
-            {
-              noriskPacksConfig &&
-              noriskPackOptions.length > 0 && (
-                <div className="flex items-center gap-2">
-                  <Select
-                    value={profile?.selected_norisk_pack_id || ""}
-                    onChange={(value) =>
-                      handleSelectedPackChange(value === "" ? null : value)
-                    }
-                    options={noriskPackOptions}
-                    placeholder="Select Pack..."
-                    className="!h-9 text-sm min-w-[180px] max-w-[250px] truncate"
-                    size="sm"
-                  />
-                  {profile?.selected_norisk_pack_id &&
-                    noriskPacksConfig?.packs[profile.selected_norisk_pack_id]
-                      ?.isExperimental && (
-                      <div className="text-xs text-yellow-500/80 font-minecraft">
-                        (Experimental)
-                      </div>
-                    )}
-                </div>
-              )}
-
             {/* Delete and Update All buttons - Only for non-NoRiskMod types */}
-            {true && (
-              <>
-                {selectedItemIds.size > 0 && (
-                  <Button
+
+            {selectedItemIds.size > 0 && (
+                <Button
                     size="sm"
                     variant="destructive"
                     onClick={handleBatchDeleteSelected}
                     icon={
                       isBatchDeleting ? (
-                        <Icon
-                          icon={LOCAL_CONTENT_TAB_ICONS_TO_PRELOAD[11]}
-                          className="animate-spin mr-1.5"
-                        />
+                          <Icon
+                              icon={LOCAL_CONTENT_TAB_ICONS_TO_PRELOAD[11]}
+                              className="animate-spin mr-1.5"
+                          />
                       ) : undefined
                     }
-                  >
-                    {isBatchDeleting
+                >
+                  {isBatchDeleting
                       ? "Deleting..."
                       : `Delete (${selectedItemIds.size})`}
-                  </Button>
-                )}
-                {Object.keys(contentUpdates).length > 0 && (
-                  <Button
+                </Button>
+            )}
+            {Object.keys(contentUpdates).length > 0 && (
+                <Button
                     size="sm"
                     variant="success"
                     onClick={handleUpdateAllAvailableContent}
                     icon={
                       isUpdatingAll ? (
-                        <Icon
-                          icon={LOCAL_CONTENT_TAB_ICONS_TO_PRELOAD[11]}
-                          className="animate-spin mr-1.5"
-                        />
+                          <Icon
+                              icon={LOCAL_CONTENT_TAB_ICONS_TO_PRELOAD[11]}
+                              className="animate-spin mr-1.5"
+                          />
                       ) : (
-                        <Icon
-                          icon={LOCAL_CONTENT_TAB_ICONS_TO_PRELOAD[14]}
-                          className="mr-1.5"
-                        />
+                          <Icon
+                              icon={LOCAL_CONTENT_TAB_ICONS_TO_PRELOAD[14]}
+                              className="mr-1.5"
+                          />
                       )
                     }
                     className={selectedItemIds.size > 0 ? "ml-2" : ""}
-                  >
-                    {isUpdatingAll
+                >
+                  {isUpdatingAll
                       ? "Updating All..."
                       : `Update All (${Object.keys(contentUpdates).length})`}
-                  </Button>
-                )}
-              </>
+                </Button>
             )}
           </div>
         </div>
@@ -1159,9 +1129,6 @@ export function LocalContentTabV2<T extends LocalContentItem>({
   // Determine if the special empty state for standard profiles should be shown
   const shouldShowStandardProfileEmptyState =
     profile.is_standard_version &&
-    (!profile?.selected_norisk_pack_id
-      ? true
-      : filteredItems.length === 0) &&
     !error;
 
   if (shouldShowStandardProfileEmptyState) {
@@ -1252,9 +1219,6 @@ export function LocalContentTabV2<T extends LocalContentItem>({
   }
 
   const hasSelectedItems = selectedItemIds.size > 0;
-  const showNoRiskPackSelector = false;
-  const isNoRiskPackSelected =
-    showNoRiskPackSelector && profile?.selected_norisk_pack_id;
 
   // Dynamic empty state messages
   const getEmptyStateMessage = () => {

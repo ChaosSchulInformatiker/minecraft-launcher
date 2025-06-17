@@ -13,17 +13,6 @@ export function DesignerSettingsTab({
   editedProfile,
   updateProfile,
 }: DesignerSettingsTabProps) {
-  
-  const handleKeepLocalAssetsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateProfile({
-      norisk_information: {
-        ...(editedProfile.norisk_information || { 
-          is_experimental: editedProfile.norisk_information?.is_experimental || false 
-        }), 
-        keep_local_assets: event.target.checked,
-      },
-    });
-  };
 
   return (
     <div className="space-y-4 pt-2">
@@ -36,10 +25,7 @@ export function DesignerSettingsTab({
             <Checkbox
               id="keepLocalAssetsDesigner"
               label="Keep Local Assets"
-              checked={
-                editedProfile.norisk_information?.keep_local_assets || false
-              }
-              onChange={handleKeepLocalAssetsChange}
+              checked={false}
               variant="flat"
               className="text-2xl"
             />

@@ -223,8 +223,6 @@ export function ProfileWizard({ onClose, onSave }: ProfileWizardProps) {
         game_version: profile.game_version!,
         loader: profile.loader || "vanilla",
         loader_version: profile.loader_version || undefined,
-        selected_norisk_pack_id:
-          profile.selected_norisk_pack_id || null || undefined,
       };
 
       const profileId = await createProfile(createParams);

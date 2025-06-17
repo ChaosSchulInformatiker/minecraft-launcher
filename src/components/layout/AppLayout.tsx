@@ -358,15 +358,15 @@ function HeaderBar({ minimizeRef, maximizeRef, closeRef }: HeaderBarProps) {
           16,
         )}, ${Number.parseInt(accentColor.value.slice(5, 7), 16)}, 0.01)`,
       }}
-      data-tauri-drag-region
+      data-tauri-drag-region={true}
     >
-      <div className="flex items-center gap-4" data-tauri-drag-region>
+      <div className="flex items-center gap-4" data-tauri-drag-region={true}>
         <div className="flex flex-col items-start -mt-2.5">
           <h1
             className="font-minecraft text-4xl tracking-wider text-white font-bold lowercase text-shadow"
-            data-tauri-drag-region
+            data-tauri-drag-region={true}
           >
-            noriskclient
+            csi minecraft launcher
           </h1>
           <span className="text-white/70 font-minecraft-ten text-[8px] font-normal -mt-2.5">
             {appVersion || "v?.?.?"}
