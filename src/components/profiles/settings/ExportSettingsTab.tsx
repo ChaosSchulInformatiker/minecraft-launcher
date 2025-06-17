@@ -288,7 +288,7 @@ export function ExportSettingsTab({
                 "resourcepacks",
                 "shaderpacks",
                 "options.txt",
-                "NoRiskClientLauncher",
+                "CSIMinecraftLauncher",
                 "config",
                 "custom_mods",
               ]}

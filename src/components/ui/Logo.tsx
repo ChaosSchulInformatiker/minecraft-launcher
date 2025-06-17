@@ -25,7 +25,7 @@ export function Logo({ size = "md", className, onClick }: LogoProps) {
     >
       <img
         src="/logo.png"
-        alt="NoRisk Logo"
+        alt="CSI Logo"
         className="w-full h-full object-contain"
       />
     </div>

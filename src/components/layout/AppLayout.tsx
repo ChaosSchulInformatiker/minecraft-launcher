@@ -24,7 +24,6 @@ import { NebulaLiquidChrome } from ".././effects/NebulaLiquidChrome";
 import { RetroGridEffect } from "../effects/RetroGridEffect";
 import PlainBackground from "../effects/PlainBackground";
 import * as ConfigService from "../../services/launcher-config-service";
-import { SocialsModal } from "../modals/SocialsModal";
 import { exit, relaunch } from '@tauri-apps/plugin-process';
 
 const navItems = [
@@ -32,7 +31,6 @@ const navItems = [
   { id: "profiles", icon: "solar:user-id-bold", label: "Profiles" },
   { id: "mods", icon: "solar:widget-bold", label: "Mods" },
   { id: "skins", icon: "solar:emoji-funny-circle-bold", label: "Skins" },
-  { id: "store", icon: "solar:shop-bold", label: "Store" },
   { id: "settings", icon: "solar:settings-bold", label: "Settings" },
 ];
 
@@ -292,8 +290,6 @@ export function AppLayout({
           </div>
         </div>
       </div>
-      {/* Global Modals Portal */}
-      <SocialsModal />
     </div>
   );
 }

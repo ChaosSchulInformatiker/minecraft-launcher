@@ -169,7 +169,7 @@ export function GlobalCrashReportModal() {
       }
 
       if (currentMclogsUrl && !noriskReportSubmitted) {
-        toast.loading('Submitting crash report to NoRisk...', { id: mainToastId });
+        toast.loading('Not submitting crash report to anyone...', { id: mainToastId });
         const crashReportPayload: CrashlogDto = {
           mcLogsUrl: currentMclogsUrl,
           metadata: crashData.process_metadata!, 
@@ -201,13 +201,14 @@ export function GlobalCrashReportModal() {
   };
   
   const handleContactSupport = async () => {
-    try {
+    /*try {
       await openExternalUrl('https://discord.norisk.gg');
       toast.success("Opened NoRisk Discord in your browser!");
     } catch (error) {
       console.error("Failed to open Discord URL:", error);
       toast.error("Could not open Discord. Please go to discord.norisk.gg manually.");
-    }
+    }*/
+    toast.error("This does not open Discord. Please go to the CSI discord manually.");
   };
 
   let primaryButtonText = 'Upload Logs & Report';

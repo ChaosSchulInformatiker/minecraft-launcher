@@ -175,46 +175,6 @@ export function GeneralSettingsTab({
             variant="flat"
           />
         </div>
-
-        <div>
-          <label className="block text-3xl font-minecraft text-white mb-2 lowercase">
-            norisk client pack
-          </label>
-          {loading ? (
-            <div className="flex items-center justify-center p-4 text-white">
-              <Icon
-                icon="solar:refresh-bold"
-                className="w-6 h-6 mr-2 animate-spin"
-              />
-              <span className="font-minecraft text-2xl">
-                loading norisk packs...
-              </span>
-            </div>
-          ) : (
-            <>
-              <Select
-                value={editedProfile.selected_norisk_pack_id || ""}
-                onChange={(value) =>
-                  updateProfile({
-                    selected_norisk_pack_id: value === "" ? null : value,
-                  })
-                }
-                options={[{ value: "", label: "none" }, ...noriskPackOptions]}
-                className="text-2xl py-3"
-                variant="flat"
-              />
-              {editedProfile.selected_norisk_pack_id &&
-                noriskPacks[editedProfile.selected_norisk_pack_id] && (
-                  <p className="text-xs text-white/70 mt-2 font-minecraft-ten tracking-wide select-none">
-                    {
-                      noriskPacks[editedProfile.selected_norisk_pack_id]
-                        .description
-                    }
-                  </p>
-                )}
-            </>
-          )}
-        </div>
       </div>
 
       <Card

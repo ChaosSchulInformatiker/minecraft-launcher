@@ -38,9 +38,9 @@ export const recentServers = [
 ];
 
 export const userData = {
-  username: "noriskk",
+  username: "csi",
   avatarUrl: "/skin.png",
-  skinUrl: "/NoRiskk.png",
+  skinUrl: "/CSI.png",
 };
 
 export const appConfig = {

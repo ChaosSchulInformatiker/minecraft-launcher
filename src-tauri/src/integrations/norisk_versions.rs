@@ -7,8 +7,6 @@ use std::env;
 use std::path::PathBuf;
 use tokio::fs;
 
-const NORISK_API_BASE_URL: &str = "https://api.noriskclient.com/v1";
-
 /// Represents the overall structure of the standard profiles from the backend
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct NoriskVersionsConfig {

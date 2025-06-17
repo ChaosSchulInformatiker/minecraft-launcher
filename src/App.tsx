@@ -19,7 +19,6 @@ import {
   type MinecraftProcessExitedPayload,
 } from "./types/events";
 import { GlobalCrashReportModal } from "./components/modals/GlobalCrashReportModal";
-import { TermsOfServiceModal } from "./components/modals/TermsOfServiceModal";
 import { useCrashModalStore } from "./store/crash-modal-store";
 import { useThemeStore } from "./store/useThemeStore";
 import { refreshNrcDataOnMount } from "./services/nrc-service";
@@ -52,7 +51,7 @@ export function App() {
 
   useEffect(() => {
     const root = document.documentElement;
-    const storedTheme = localStorage.getItem("norisk-theme-storage");
+    const storedTheme = localStorage.getItem("csi-theme-storage");
     if (storedTheme) {
       try {
         const themeData = JSON.parse(storedTheme);
@@ -176,7 +175,6 @@ export function App() {
         <ScrollbarProvider />
         <GlobalToaster />
         <GlobalCrashReportModal />
-        <TermsOfServiceModal isOpen={!hasAcceptedTermsOfService} />
         <AppLayout activeTab={activeTab} onNavChange={handleNavChange}>
           <Outlet context={profilesTabContext} />
         </AppLayout>

@@ -6,7 +6,7 @@ export enum EventType {
   ExtractingNatives = "extracting_natives",
   DownloadingAssets = "downloading_assets",
   ReusingMinecraftAssets = "reusing_minecraft_assets",
-  CopyingNoRiskClientAssets = "copying_norisk_client_assets",
+  CopyingLauncherAssets = "copying_norisk_client_assets",
   DownloadingNoRiskClientAssets = "downloading_norisk_client_assets",
   DownloadingClient = "downloading_client",
   InstallingFabric = "installing_fabric",

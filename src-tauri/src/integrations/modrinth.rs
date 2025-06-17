@@ -406,7 +406,7 @@ pub async fn search_projects(
         .header(
             "User-Agent",
             format!(
-                "NoRiskClient-Launcher/{} (contact@noriskclient.de)",
+                "CSI-Minecraft-Launcher/{}",
                 env!("CARGO_PKG_VERSION")
             ),
         )
@@ -510,7 +510,7 @@ pub async fn get_mod_versions(
         .header(
             "User-Agent",
             format!(
-                "NoRiskClient-Launcher/{} (contact@noriskclient.de)",
+                "CSI-Minecraft-Launcher/{}",
                 env!("CARGO_PKG_VERSION")
             ),
         )
@@ -555,7 +555,7 @@ pub async fn get_version_details(version_id: String) -> Result<ModrinthVersion> 
         .header(
             "User-Agent",
             format!(
-                "NoRiskClient-Launcher/{} (contact@noriskclient.de)",
+                "CSI-Minecraft-Launcher/{}",
                 env!("CARGO_PKG_VERSION")
             ),
         )
@@ -695,7 +695,7 @@ pub async fn get_version_by_hash(file_hash: String) -> Result<ModrinthVersion> {
         .header(
             "User-Agent",
             format!(
-                "NoRiskClient-Launcher/{} (support@norisk.gg)",
+                "CSI-Minecraft-Launcher/{}",
                 env!("CARGO_PKG_VERSION")
             ),
         )
@@ -779,7 +779,7 @@ pub async fn get_versions_by_hashes(
         .header(
             "User-Agent",
             format!(
-                "NoRiskClient-Launcher/{} (support@norisk.gg)",
+                "CSI-Minecraft-Launcher/{}",
                 env!("CARGO_PKG_VERSION")
             ),
         )
@@ -897,7 +897,7 @@ pub async fn check_bulk_updates(
         .header(
             "User-Agent",
             format!(
-                "NoRiskClient-Launcher/{} (support@norisk.gg)",
+                "CSI-Minecraft-Launcher/{}",
                 env!("CARGO_PKG_VERSION")
             ),
         )
@@ -982,7 +982,7 @@ pub async fn get_multiple_projects(ids: Vec<String>) -> Result<Vec<ModrinthProje
         .header(
             "User-Agent",
             format!(
-                "NoRiskClient-Launcher/{} (support@norisk.gg)",
+                "CSI-Minecraft-Launcher/{}",
                 env!("CARGO_PKG_VERSION")
             ),
         )
@@ -1074,7 +1074,7 @@ pub async fn get_modrinth_categories() -> Result<Vec<ModrinthCategory>> {
         .header(
             "User-Agent",
             format!(
-                "NoRiskClient-Launcher/{} (contact@noriskclient.de)",
+                "CSI-Minecraft-Launcher/{}",
                 env!("CARGO_PKG_VERSION")
             ),
         )
@@ -1131,7 +1131,7 @@ pub async fn get_modrinth_loaders() -> Result<Vec<ModrinthLoader>> {
         .header(
             "User-Agent",
             format!(
-                "NoRiskClient-Launcher/{} (contact@noriskclient.de)",
+                "CSI-Minecraft-Launcher/{}",
                 env!("CARGO_PKG_VERSION")
             ),
         )
@@ -1182,7 +1182,7 @@ pub async fn get_modrinth_game_versions() -> Result<Vec<ModrinthGameVersion>> {
         .header(
             "User-Agent",
             format!(
-                "NoRiskClient-Launcher/{} (contact@noriskclient.de)",
+                "CSI-Minecraft-Launcher/{}",
                 env!("CARGO_PKG_VERSION")
             ),
         )

@@ -3,8 +3,8 @@
 // Import items from your main crate (replace with your actual crate name)
 // The crate name is defined in src-tauri/Cargo.toml -> [package] -> name
 use log::{error, info};
-use noriskclient_launcher_v3_lib::error::{AppError, Result}; // Assuming these are pub
-use noriskclient_launcher_v3_lib::integrations::mrpack::{process_mrpack, resolve_manifest_files};
+use csi_minecraft_launcher_lib::error::{AppError, Result}; // Assuming these are pub
+use csi_minecraft_launcher_lib::integrations::mrpack::{process_mrpack, resolve_manifest_files};
 use std::path::PathBuf; // Import log macros
 
 // Optional: setup logging for tests

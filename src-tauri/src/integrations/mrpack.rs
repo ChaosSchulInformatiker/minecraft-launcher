@@ -839,7 +839,7 @@ pub async fn download_and_process_mrpack(download_url: &str, file_name: &str) ->
         .header(
             "User-Agent",
             format!(
-                "NoRiskClient-Launcher/{} (support@norisk.gg)",
+                "CSI-Minecraft-Launcher/{}",
                 env!("CARGO_PKG_VERSION")
             ),
         )

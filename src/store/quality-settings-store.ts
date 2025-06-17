@@ -11,11 +11,11 @@ interface QualitySettingsState {
 export const useQualitySettingsStore = create<QualitySettingsState>()(
   persist(
     (set) => ({
-      qualityLevel: "medium",
+      qualityLevel: "low",
       setQualityLevel: (level) => set({ qualityLevel: level }),
     }),
     {
-      name: "norisk-quality-settings-storage",
+      name: "csi-quality-settings-storage",
     },
   ),
 );

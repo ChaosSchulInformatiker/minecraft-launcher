@@ -1,7 +1,7 @@
 // src-tauri/tests/mrpack_test.rs
 
-use noriskclient_launcher_v3_lib::error::{AppError, Result}; // Use your crate name
-use noriskclient_launcher_v3_lib::integrations::mrpack::{process_mrpack, resolve_manifest_files};
+use csi_minecraft_launcher_lib::error::{AppError, Result}; // Use your crate name
+use csi_minecraft_launcher_lib::integrations::mrpack::{process_mrpack, resolve_manifest_files};
 use std::env;
 use std::path::PathBuf;
 

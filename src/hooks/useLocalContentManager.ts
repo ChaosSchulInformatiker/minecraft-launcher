@@ -19,7 +19,7 @@ export interface LocalContentItem extends ProfileLocalContentItem {
 }
 
 // Enum for the types of content this hook can manage (used for UI/logic, maps to NrContentType for backend)
-export type LocalContentType = 'ShaderPack' | 'ResourcePack' | 'DataPack' | 'Mod' | 'NoRiskMod';
+export type LocalContentType = 'ShaderPack' | 'ResourcePack' | 'DataPack' | 'Mod';
 
 interface UseLocalContentManagerProps<T extends LocalContentItem> {
   profile?: Profile;
@@ -87,7 +87,6 @@ function mapUiContentTypeToBackend(uiType: LocalContentType): NrContentType {
     case 'ShaderPack': return NrContentType.ShaderPack;
     case 'DataPack': return NrContentType.DataPack;
     case 'Mod': return NrContentType.Mod;
-    case 'NoRiskMod': return NrContentType.NoRiskMod;
     default: throw new Error(`Unsupported UI content type: ${uiType}`);
   }
 }
@@ -164,15 +163,7 @@ function createTogglePayload<T extends LocalContentItem>(
     content_type: backendContentType,
   };
 
-  if (uiContentType === 'NoRiskMod') {
-    const noriskIdentifierFromItem = (item as ProfileLocalContentItem).norisk_info; // Expect norisk_info from the item
-    if (noriskIdentifierFromItem) {
-      return { ...payloadBase, norisk_mod_identifier: noriskIdentifierFromItem }; // Map to payload's norisk_mod_identifier
-    } else {
-      toast.error(`NoRiskMod item ${item.filename} is missing the norisk_info. Cannot toggle.`);
-      return null;
-    }
-  } else if (uiContentType === 'Mod') {
+  if (uiContentType === 'Mod') {
     if (item.source_type === "custom") {
         if (!item.path) {
             toast.error(`Custom Mod item ${item.filename} must have a valid path to be toggled.`);
@@ -520,11 +511,7 @@ export function useLocalContentManager<T extends LocalContentItem>({
           // For NoRiskMod, the item.path points to a .jar file in cache
           // For other types, item.path usually points to a .zip file
           const lowerPath = item.path.toLowerCase();
-          if (contentType === 'NoRiskMod') {
-            return lowerPath.endsWith('.jar');
-          } else {
-            return lowerPath.endsWith('.zip');
-          }
+          return lowerPath.endsWith('.zip');
         })
         .map(item => ({ filename: item.filename, path: item.path! })); 
       
@@ -629,7 +616,7 @@ export function useLocalContentManager<T extends LocalContentItem>({
           return i;
         })
       );
-      if (contentType !== 'NoRiskMod' && onRefreshRequiredRef.current) {
+      if (onRefreshRequiredRef.current) {
         onRefreshRequiredRef.current();
       }
     } catch (err) {
@@ -821,7 +808,7 @@ export function useLocalContentManager<T extends LocalContentItem>({
       const requestBody: ModrinthBulkUpdateRequestBody = {
         hashes,
         algorithm: "sha1" as ModrinthHashAlgorithm,
-        loaders: (contentType === 'Mod' || contentType === 'NoRiskMod') && currentProfile.loader ? [currentProfile.loader] : [],
+        loaders: contentType === 'Mod' && currentProfile.loader ? [currentProfile.loader] : [],
         game_versions: [currentProfile.game_version],
       };
       const updates = await invoke<Record<string, ModrinthVersion | null>>(

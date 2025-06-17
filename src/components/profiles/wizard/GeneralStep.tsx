@@ -162,7 +162,7 @@ export function GeneralStep({
       >
         <div>
           <label className="block text-2xl font-minecraft text-white mb-2 lowercase">
-            maximum ram: {memoryMaxMb} mb ({(memoryMaxMb / 1024).toFixed(1)} gb)
+            maximum ram: {memoryMaxMb} MiB ({(memoryMaxMb / 1024).toFixed(1)} GiB)
           </label>
           <RangeSlider
             value={memoryMaxMb}
@@ -170,8 +170,8 @@ export function GeneralStep({
             min={1024}
             max={systemRamMb}
             step={512}
-            minLabel="1 GB"
-            maxLabel={`${(systemRamMb / 1024).toFixed(1)} GB`}
+            minLabel="1 GiB"
+            maxLabel={`${(systemRamMb / 1024).toFixed(1)} GiB`}
           />
           {(() => {
             let recommendedDisplayRam;
@@ -184,54 +184,11 @@ export function GeneralStep({
 
             return (
               <p className="text-xs text-white/60 mt-3 font-minecraft-ten tracking-wide">
-                Recommended: {recommendedDisplayRam} MB (
-                {(recommendedDisplayRam / 1024).toFixed(1)} GB)
+                Recommended: {recommendedDisplayRam} MiB (
+                {(recommendedDisplayRam / 1024).toFixed(1)} GiB)
               </p>
             );
           })()}
-        </div>
-
-        <div>
-          <label className="block text-2xl font-minecraft text-white mb-2 lowercase">
-            norisk client pack
-          </label>
-          {loading ? (
-            <div className="flex items-center gap-2 text-white/70">
-              <Icon
-                icon="solar:refresh-bold"
-                className="w-5 h-5 animate-spin"
-              />
-              <span className="font-minecraft text-xl">
-                Loading NoRisk packs...
-              </span>
-            </div>
-          ) : (
-            <>
-              <Select
-                value={profile.selected_norisk_pack_id || ""}
-                onChange={(value) =>
-                  updateProfile({
-                    selected_norisk_pack_id: value === "" ? null : value,
-                  })
-                }
-                options={[
-                  { value: "", label: "None (Optional)" },
-                  ...noriskPackOptions,
-                ]}
-              />
-              {profile.selected_norisk_pack_id &&
-                noriskPacks[profile.selected_norisk_pack_id] && (
-                  <Card
-                    variant="flat"
-                    className="mt-4 p-4 bg-black/20 border border-white/10"
-                  >
-                    <p className="text-xs text-white/80 font-minecraft-ten tracking-wide">
-                      {noriskPacks[profile.selected_norisk_pack_id].description}
-                    </p>
-                  </Card>
-                )}
-            </>
-          )}
         </div>
       </Card>
     </div>

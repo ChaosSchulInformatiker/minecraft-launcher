@@ -310,7 +310,7 @@ export const useThemeStore = create<ThemeState>()(
       },
     }),
     {
-      name: "norisk-theme-storage",
+      name: "csi-theme-storage",
       onRehydrateStorage: () => (state) => {
         if (state) {
           state.applyAccentColorToDOM();

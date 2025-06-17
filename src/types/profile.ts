@@ -152,15 +152,12 @@ export interface Profile {
   settings: ProfileSettings;
   state: ProfileState;
   mods: Mod[];
-  selected_norisk_pack_id: string | null;
-  disabled_norisk_mods_detailed: NoriskModIdentifier[];
   source_standard_profile_id: string | null;
   group: string | null;
   is_standard_version: boolean;
   description: string | null;
   banner: ProfileBanner | null;
   background: ProfileBanner | null;
-  norisk_information: NoriskInformation | null;
 }
 
 export interface ProfileGroup {
@@ -176,7 +173,6 @@ export interface CreateProfileParams {
   game_version: string;
   loader: string;
   loader_version?: string;
-  selected_norisk_pack_id?: string;
 }
 
 export interface UpdateProfileParams {
@@ -185,13 +181,10 @@ export interface UpdateProfileParams {
   loader?: string;
   loader_version?: string;
   settings?: ProfileSettings;
-  selected_norisk_pack_id?: string;
   group?: string | null;
   description?: string | null;
-  clear_selected_norisk_pack?: boolean;
   banner?: ProfileBanner | null;
   background?: ProfileBanner | null;
-  norisk_information?: NoriskInformation | null;
 }
 
 export interface CopyProfileParams {

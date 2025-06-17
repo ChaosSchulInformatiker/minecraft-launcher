@@ -40,7 +40,7 @@ export function ProfileImport({
         filters: [
           {
             name: "Modpack Files",
-            extensions: ["noriskpack", "mrpack"],
+            extensions: ["mrpack"],
           },
         ],
         title: "Select Modpack to Import",
@@ -126,55 +126,10 @@ export function ProfileImport({
               import profile pack
             </h3>
             <p className="text-2xl text-white/70 mb-6 font-minecraft tracking-wide select-none">
-              Import a .mrpack or .noriskpack file to create a new profile. This
+              Import a .mrpack file to create a new profile. This
               will open a file selection dialog.
             </p>
           </div>
-
-          <Card className="p-5">
-            <h3 className="text-2xl text-white font-minecraft mb-4 select-none lowercase">
-              supported formats:
-            </h3>
-            <ul
-              className="text-xl text-white/80 space-y-4 select-none font-minecraft"
-              ref={formatItemsRef}
-            >
-              <li className="flex items-center">
-                <div
-                  className="w-10 h-10 rounded-md flex items-center justify-center mr-4"
-                  style={{
-                    backgroundColor: `${accentColor.value}30`,
-                    borderWidth: "2px",
-                    borderStyle: "solid",
-                    borderColor: `${accentColor.value}60`,
-                  }}
-                >
-                  <Icon
-                    icon="solar:file-bold"
-                    className="w-5 h-5 text-blue-400"
-                  />
-                </div>
-                <span>.mrpack (Modrinth)</span>
-              </li>
-              <li className="flex items-center">
-                <div
-                  className="w-10 h-10 rounded-md flex items-center justify-center mr-4"
-                  style={{
-                    backgroundColor: `${accentColor.value}30`,
-                    borderWidth: "2px",
-                    borderStyle: "solid",
-                    borderColor: `${accentColor.value}60`,
-                  }}
-                >
-                  <Icon
-                    icon="solar:file-bold"
-                    className="w-5 h-5 text-green-400"
-                  />
-                </div>
-                <span>.noriskpack (NoRisk Launcher)</span>
-              </li>
-            </ul>
-          </Card>
         </div>
       </div>
     </Modal>

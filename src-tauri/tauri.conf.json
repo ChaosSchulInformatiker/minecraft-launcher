@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "NoRisk Launcher",
+  "productName": "CSI Minecraft Launcher",
   "version": "0.6.1",
-  "identifier": "gg.norisk.NoRiskClientLauncherV3",
+  "identifier": "com.csi.MinecraftLauncher",
   "build": {
     "beforeDevCommand": "yarn dev",
     "devUrl": "http://localhost:1420",
@@ -26,7 +26,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "NoRiskClient",
+        "title": "CSI Minecraft Launcher",
         "width": 1280,
         "height": 800,
         "minWidth": 1080,
@@ -113,10 +113,10 @@
     "fileAssociations": [
       {
         "ext": [
-          "noriskpack"
+          "csimlpack"
         ],
-        "name": "NoriskPack File",
-        "description": "NoRiskClient Modpack File"
+        "name": "CSI Launcher File",
+        "description": "CSI Modpack File"
       }
     ]
   }

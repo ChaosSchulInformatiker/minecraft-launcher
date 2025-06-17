@@ -150,25 +150,6 @@ export function WizardSummary({ profile, error }: WizardSummaryProps) {
             </div>
           </div>
         </Card>
-
-        {profile.selected_norisk_pack_id && (
-          <Card
-            variant="flat"
-            className="p-6 bg-black/20 border border-white/10"
-          >
-            <h3 className="text-2xl text-white font-minecraft tracking-wide lowercase mb-4">
-              norisk client pack
-            </h3>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 flex items-center justify-center rounded-md bg-black/30 border border-white/20">
-                <Icon icon="solar:shield-bold" className="w-6 h-6 text-white" />
-              </div>
-              <div className="text-xl text-white font-minecraft tracking-wide lowercase">
-                {profile.selected_norisk_pack_id}
-              </div>
-            </div>
-          </Card>
-        )}
       </div>
 
       <Card

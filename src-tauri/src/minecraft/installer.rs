@@ -8,7 +8,7 @@ use crate::minecraft::downloads::mc_client_download::MinecraftClientDownloadServ
 use crate::minecraft::downloads::mc_libraries_download::MinecraftLibrariesDownloadService;
 use crate::minecraft::downloads::mc_natives_download::MinecraftNativesDownloadService;
 use crate::minecraft::downloads::NoriskPackDownloadService;
-use crate::minecraft::downloads::{ModDownloadService, NoriskClientAssetsDownloadService};
+use crate::minecraft::downloads::{ModDownloadService};
 use crate::minecraft::dto::JavaDistribution;
 use crate::minecraft::{MinecraftLaunchParameters, MinecraftLauncher};
 use crate::state::event_state::{EventPayload, EventType};
@@ -330,19 +330,6 @@ pub async fn install_minecraft_version(
         .await?;
     info!("Asset download completed!");
 
-    // Download NoRiskClient assets if profile has a selected pack
-    info!("\nDownloading NoRiskClient assets...");
-
-    let norisk_assets_service = NoriskClientAssetsDownloadService::new()
-        .with_concurrent_downloads(launcher_config.concurrent_downloads);
-
-    // Download assets for this profile - progress events are now handled internally
-    norisk_assets_service
-        .download_nrc_assets_for_profile(&profile, credentials.as_ref(), is_experimental_mode)
-        .await?;
-
-    info!("NoRiskClient Asset download completed!");
-
     // Emit client download event
     let client_event_id = emit_progress_event(
         &state,
@@ -541,89 +528,6 @@ pub async fn install_minecraft_version(
         None,
     )
     .await?;
-
-    // --- Step: Download mods from selected Norisk Pack (if any) ---
-    if let Some(selected_pack_id) = &profile.selected_norisk_pack_id {
-        // Use the already loaded config
-        if let Some(config) = loaded_norisk_config.as_ref() {
-            let norisk_mods_event_id = emit_progress_event(
-                &state,
-                EventType::DownloadingMods,
-                profile.id,
-                &format!(
-                    "Downloading Norisk Pack '{}' Mods... (Phase 2)",
-                    selected_pack_id
-                ),
-                0.0,
-                None,
-            )
-            .await?;
-
-            info!(
-                "Downloading mods for selected Norisk Pack '{}'...",
-                selected_pack_id
-            );
-
-            let norisk_downloader_service =
-                NoriskPackDownloadService::with_concurrency(launcher_config.concurrent_downloads);
-            let loader_str = modloader_enum.as_str();
-
-            match norisk_downloader_service
-                .download_pack_mods_to_cache(
-                    config, // Pass the reference to the loaded config
-                    selected_pack_id,
-                    version_id,
-                    loader_str,
-                )
-                .await
-            {
-                Ok(_) => {
-                    info!(
-                        "Norisk Pack '{}' mods download completed successfully.",
-                        selected_pack_id
-                    );
-                    emit_progress_event(
-                        &state,
-                        EventType::DownloadingMods,
-                        profile.id,
-                        &format!(
-                            "Norisk Pack '{}' Mods downloaded successfully! (Phase 2)",
-                            selected_pack_id
-                        ),
-                        1.0,
-                        None,
-                    )
-                    .await?;
-                }
-                Err(e) => {
-                    error!(
-                        "Failed to download Norisk Pack '{}' mods: {}",
-                        selected_pack_id, e
-                    );
-                    emit_progress_event(
-                        &state,
-                        EventType::DownloadingMods,
-                        profile.id,
-                        &format!("Error downloading Norisk Pack '{}' mods!", selected_pack_id),
-                        1.0,
-                        Some(e.to_string()),
-                    )
-                    .await?;
-                }
-            }
-        } else {
-            // Should not happen if selected_pack_id is Some, but handle defensively
-            error!(
-                "Norisk config was expected but not loaded for pack ID: {}",
-                selected_pack_id
-            );
-        }
-    } else {
-        info!(
-            "No Norisk Pack selected for profile '{}', skipping pack download.",
-            profile.name
-        );
-    }
 
     // --- Step: Resolve final mod list for syncing ---
     let resolve_event_id = emit_progress_event(

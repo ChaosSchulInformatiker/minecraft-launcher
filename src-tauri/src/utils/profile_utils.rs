@@ -125,7 +125,7 @@ async fn download_content(
         .header(
             "User-Agent",
             format!(
-                "NoRiskClient-Launcher/{} (support@norisk.gg)",
+                "CSI-Minecraft-Launcher/{}",
                 env!("CARGO_PKG_VERSION")
             ),
         )

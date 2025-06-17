@@ -263,27 +263,6 @@ export function SettingsTab() {
           <div className="flex items-center justify-between p-3 rounded-lg border border-[#ffffff20] hover:bg-black/30 transition-colors">
             <div className="flex-1">
               <h5 className="font-minecraft text-2xl lowercase text-white">
-                Auto Updates
-              </h5>
-              <p className="text-sm text-white/60 font-minecraft-ten mt-1">
-                Automatically check for and download launcher updates when
-                available.
-              </p>
-            </div>
-            <ToggleSwitch
-              checked={tempConfig?.auto_check_updates || false}
-              onChange={(checked) =>
-                tempConfig &&
-                setTempConfig({ ...tempConfig, auto_check_updates: checked })
-              }
-              disabled={saving}
-              size="lg"
-            />
-          </div>
-
-          <div className="flex items-center justify-between p-3 rounded-lg border border-[#ffffff20] hover:bg-black/30 transition-colors">
-            <div className="flex-1">
-              <h5 className="font-minecraft text-2xl lowercase text-white">
                 Discord Presence
               </h5>
               <p className="text-sm text-white/60 font-minecraft-ten mt-1">
@@ -299,27 +278,6 @@ export function SettingsTab() {
                   ...tempConfig,
                   enable_discord_presence: checked,
                 })
-              }
-              disabled={saving}
-              size="lg"
-            />
-          </div>
-
-          <div className="flex items-center justify-between p-3 rounded-lg border border-[#ffffff20] hover:bg-black/30 transition-colors">
-            <div className="flex-1">
-              <h5 className="font-minecraft text-2xl lowercase text-white">
-                Beta Updates
-              </h5>
-              <p className="text-sm text-white/60 font-minecraft-ten mt-1">
-                Receive beta versions and pre-release updates. These may be
-                unstable and contain bugs.
-              </p>
-            </div>
-            <ToggleSwitch
-              checked={tempConfig?.check_beta_channel || false}
-              onChange={(checked) =>
-                tempConfig &&
-                setTempConfig({ ...tempConfig, check_beta_channel: checked })
               }
               disabled={saving}
               size="lg"
@@ -488,7 +446,7 @@ export function SettingsTab() {
           </div>
         </div>
 
-        <div className="mt-6 p-4 rounded-lg border border-[#ffffff20] bg-black/10">
+        {/*<div className="mt-6 p-4 rounded-lg border border-[#ffffff20] bg-black/10">
           <div className="flex items-center gap-2 mb-2">
             <Icon icon="solar:lock-bold" className="w-5 h-5 text-white/50" />
             <h4 className="text-xl font-minecraft text-white/50 lowercase">
@@ -498,7 +456,7 @@ export function SettingsTab() {
           <p className="text-sm text-white/40 font-minecraft-ten">
             Custom color selection is currently disabled
           </p>
-        </div>
+        </div>*/}
       </Card>
 
       <Card variant="flat" className="p-6">

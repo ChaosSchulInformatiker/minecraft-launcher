@@ -208,11 +208,6 @@ export function ProfileDetailView({
       label: "Data Packs",
       icon: "solar:database-bold",
     },
-    {
-      id: "noriskv2" as ContentSubType,
-      label: "NoRisk Mods",
-      icon: "solar:shield-check-bold",
-    },
   ];
 
   return (
@@ -481,19 +476,6 @@ export function ProfileDetailView({
                     itemTypeNamePlural="data packs"
                     addContentButtonText="Add Data Packs"
                     emptyStateIconOverride="solar:database-bold-duotone"
-                    onRefreshRequired={handleRefresh}
-                    onBrowseContentRequest={handleBrowseContent}
-                  />
-                )}
-                  {activeContentType === "noriskv2" && (
-                  <LocalContentTabV2<LocalContentItem>
-                    profile={currentProfile}
-                    contentType="NoRiskMod"
-                    getDisplayFileName={getGenericDisplayFileName}
-                    itemTypeName="NoRisk Mod"
-                    itemTypeNamePlural="NoRisk Mods"
-                    addContentButtonText="Add NoRisk Mods"
-                    emptyStateIconOverride="solar:shield-check-bold-duotone"
                     onRefreshRequired={handleRefresh}
                     onBrowseContentRequest={handleBrowseContent}
                   />

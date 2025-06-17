@@ -217,54 +217,12 @@ export function LocalContentTabV2<T extends LocalContentItem>({
 
   // Fetch NoRiskPacksConfig if content type is NoRiskMod
   useEffect(() => {
-    if (contentType === "NoRiskMod" && profile) {
-      const fetchPacks = async () => {
-        setIsFetchingPacksConfig(true);
-        try {
-          const config = await ProfileService.getNoriskPacksResolved();
-          setNoriskPacksConfig(config);
-        } catch (err) {
-          console.error("Failed to fetch NoRisk packs config:", err);
-          toast.error("Failed to load NoRisk pack list.");
-          setNoriskPacksConfig(null);
-        } finally {
-          setIsFetchingPacksConfig(false);
-        }
-      };
-      fetchPacks();
-    } else {
-      setNoriskPacksConfig(null); // Clear if not NoRiskMod or no profile
-    }
+    setNoriskPacksConfig(null); // Clear if not NoRiskMod or no profile
   }, [contentType, profile]);
 
-  const handleRefreshPacksList = useCallback(async () => {
-    if (contentType !== "NoRiskMod") return;
-    setIsRefreshingPacksList(true);
-    try {
-      await ProfileService.refreshNoriskPacks();
-      const config = await ProfileService.getNoriskPacksResolved();
-      setNoriskPacksConfig(config);
-      toast.success("NoRisk Pack list refreshed.");
-    } catch (err) {
-      console.error("Failed to refresh NoRisk packs list:", err);
-      toast.error("Failed to refresh NoRisk pack list.");
-    } finally {
-      setIsRefreshingPacksList(false);
-    }
-  }, [contentType]);
 
   const noriskPackOptions = useMemo((): SelectOption[] => {
-    if (contentType !== "NoRiskMod" || !noriskPacksConfig) {
-      return [{ value: "", label: "- No Pack Selected -" }];
-    }
-    const options = Object.entries(noriskPacksConfig.packs).map(
-      ([id, packDef]) => ({
-        value: id,
-        label: packDef.displayName || id,
-      }),
-    );
-    options.sort((a, b) => a.label.localeCompare(b.label));
-    return [{ value: "", label: "- No Pack Selected -" }, ...options];
+    return [{ value: "", label: "- No Pack Selected -" }];
   }, [contentType, noriskPacksConfig]);
 
   const handleSelectedPackChange = useCallback(
@@ -609,7 +567,6 @@ export function LocalContentTabV2<T extends LocalContentItem>({
             {versionText ? (
               <>
                 <span>Version: {versionText}</span>
-                {contentType !== "NoRiskMod" && (
                   <div className="relative">
                     <button
                       ref={(el) => {
@@ -773,7 +730,6 @@ export function LocalContentTabV2<T extends LocalContentItem>({
                         document.body,
                       )}
                   </div>
-                )}
               </>
             ) : (
               <span>{descriptionText}</span>
@@ -1001,10 +957,7 @@ export function LocalContentTabV2<T extends LocalContentItem>({
     ],
   );
 
-  const isBusyWithEssentialLoad =
-    isLoading ||
-    (contentType === "NoRiskMod" &&
-      (isFetchingPacksConfig || isRefreshingPacksList));
+  const isBusyWithEssentialLoad = isLoading
   const isAnyBatchActionInProgress =
     isBatchToggling || isBatchDeleting || isUpdatingAll;
 
@@ -1017,7 +970,7 @@ export function LocalContentTabV2<T extends LocalContentItem>({
           placeholder={`Search ${itemTypeNamePlural}...`}
           className="flex-grow !h-9"
         />
-        {effectiveOnAddContent && contentType !== "NoRiskMod" && profile && (
+        {effectiveOnAddContent && profile && (
           <div className="flex flex-shrink-0">
             <Button
               onClick={() => {
@@ -1113,7 +1066,7 @@ export function LocalContentTabV2<T extends LocalContentItem>({
             )}
 
             {/* NoRisk Pack Selector - Only for NoRiskMod type */}
-            {contentType === "NoRiskMod" &&
+            {
               noriskPacksConfig &&
               noriskPackOptions.length > 0 && (
                 <div className="flex items-center gap-2">
@@ -1138,7 +1091,7 @@ export function LocalContentTabV2<T extends LocalContentItem>({
               )}
 
             {/* Delete and Update All buttons - Only for non-NoRiskMod types */}
-            {contentType !== "NoRiskMod" && (
+            {true && (
               <>
                 {selectedItemIds.size > 0 && (
                   <Button
@@ -1206,7 +1159,7 @@ export function LocalContentTabV2<T extends LocalContentItem>({
   // Determine if the special empty state for standard profiles should be shown
   const shouldShowStandardProfileEmptyState =
     profile.is_standard_version &&
-    (contentType === "NoRiskMod" && !profile?.selected_norisk_pack_id
+    (!profile?.selected_norisk_pack_id
       ? true
       : filteredItems.length === 0) &&
     !error;
@@ -1299,15 +1252,13 @@ export function LocalContentTabV2<T extends LocalContentItem>({
   }
 
   const hasSelectedItems = selectedItemIds.size > 0;
-  const showNoRiskPackSelector = contentType === "NoRiskMod";
+  const showNoRiskPackSelector = false;
   const isNoRiskPackSelected =
     showNoRiskPackSelector && profile?.selected_norisk_pack_id;
 
   // Dynamic empty state messages
   const getEmptyStateMessage = () => {
-    if (contentType === "NoRiskMod" && !profile?.selected_norisk_pack_id) {
-      return "No NoRisk Pack Selected";
-    } else if (error) {
+    if (error) {
       return `Error loading ${itemTypeNamePlural}`;
     } else if ((isLoading || isFetchingPacksConfig) && items.length === 0) {
       return `Loading ${itemTypeNamePlural}...`;
@@ -1329,9 +1280,7 @@ export function LocalContentTabV2<T extends LocalContentItem>({
   };
 
   const getEmptyStateDescription = () => {
-    if (contentType === "NoRiskMod" && !profile?.selected_norisk_pack_id) {
-      return "Please select a NoRisk Modpack from the dropdown to manage its mods.";
-    } else if (error) {
+    if (error) {
       return "Please try refreshing or check the console.";
     } else if ((isLoading || isFetchingPacksConfig) && items.length === 0) {
       return "Please wait while content is being loaded.";
@@ -1355,11 +1304,7 @@ export function LocalContentTabV2<T extends LocalContentItem>({
   return (
     <>
       <GenericContentTab<T>
-        items={
-          contentType === "NoRiskMod" && !profile?.selected_norisk_pack_id
-            ? []
-            : filteredItems
-        }
+        items={filteredItems}
         renderListItem={renderListItem}
         isLoading={isBusyWithEssentialLoad}
         error={error}

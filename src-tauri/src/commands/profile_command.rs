@@ -903,8 +903,8 @@ pub async fn import_profile_from_file(app_handle: tauri::AppHandle) -> Result<()
         app_handle
             .dialog()
             .file()
-            .add_filter("Modpack Files", &["mrpack", "noriskpack"])
-            .set_title("Select Modpack File (.mrpack or .noriskpack)")
+            .add_filter("Modpack Files", &["mrpack"])
+            .set_title("Select Modpack File (.mrpack)")
             .blocking_pick_file() // Use the blocking version for single file selection
     })
     .await
@@ -1382,7 +1382,7 @@ pub async fn export_profile(
     }
 
     // Generate complete filename with extension
-    let noriskpack_filename = format!("{}.noriskpack", sanitized_name);
+    let noriskpack_filename = format!("{}.csimlpack", sanitized_name);
 
     // Create full export path
     let export_path = exports_dir.join(&noriskpack_filename);
@@ -1856,20 +1856,13 @@ pub async fn get_all_profiles_and_last_played() -> Result<AllProfilesAndLastPlay
     // 1. Fetch User Profiles
     let user_profiles = state.profile_manager.list_profiles().await?;
 
-    // 2. Fetch Standard Norisk Profiles
-    let norisk_versions_config = state.norisk_version_manager.get_config().await;
-    let standard_profiles = norisk_versions_config.profiles; // This is Vec<Profile>
 
     // 3. Combine Profiles
     let mut all_profiles_combined = user_profiles.clone();
-    all_profiles_combined.extend(standard_profiles.clone());
 
     // Deduplicate based on ID, preferring user profiles if IDs clash (highly unlikely with UUIDs but safe)
     // This is a more robust way to combine, though simple concatenation is often fine.
     let mut unique_profiles_map: HashMap<Uuid, Profile> = HashMap::new();
-    for profile in standard_profiles.iter() {
-        unique_profiles_map.insert(profile.id, profile.clone());
-    }
     for profile in user_profiles.iter() {
         // User profiles overwrite standard if same ID
         unique_profiles_map.insert(profile.id, profile.clone());
@@ -1897,9 +1890,7 @@ pub async fn get_all_profiles_and_last_played() -> Result<AllProfilesAndLastPlay
     // If effective_last_played_id is None (either initially or after validation failed)
     if effective_last_played_id.is_none() {
         info!("Last played profile ID is not set or invalid. Attempting to set a default.");
-        let new_default_id: Option<Uuid> = if !standard_profiles.is_empty() {
-            standard_profiles.first().map(|p| p.id)
-        } else if !user_profiles.is_empty() {
+        let new_default_id: Option<Uuid> = if !user_profiles.is_empty() {
             user_profiles.first().map(|p| p.id)
         } else {
             None

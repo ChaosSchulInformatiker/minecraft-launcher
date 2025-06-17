@@ -62,15 +62,6 @@ export function UserProfileBar({ className }: UserProfileBarProps) {
             className="h-10"
           />
         </div>
-
-        <IconButton 
-          icon={<Icon icon="solar:link-linear" className="w-5 h-5" />}
-          onClick={openSocialsModal}
-          variant="flat"
-          size="sm"
-          aria-label="Open Social Accounts"
-          className="text-white/70 hover:text-white h-10 w-10"
-        />
       </div>
 
   

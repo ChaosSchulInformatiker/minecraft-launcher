@@ -69,7 +69,7 @@ pub async fn discord_auth_link(app: AppHandle) -> Result<(), CommandError> {
 
     let window =
         WebviewWindowBuilder::new(&app, "discord-signin", WebviewUrl::External(external_url))
-            .title("Discord X NoRiskClient")
+            .title("Discord x CSI")
             .always_on_top(true)
             .center()
             .max_inner_size(1250.0, 1000.0)

@@ -145,7 +145,7 @@ pub async fn find_first_png_in_archive_as_base64(archive_path: &Path) -> Result<
 
 pub async fn get_jar_icon_test() {
     // Verwende einen Raw-String für den Windows-Pfad
-    let path_str = r"C:\Users\sheesh\AppData\Roaming\norisk\NoRiskClientV3\meta\mod_cache\§fAbsolute §7[§f16x§7]§8.zip";
+    let path_str = r"C:\Users\sheesh\AppData\Roaming\csi\CSIMinecraftLauncher\meta\mod_cache\§fAbsolute §7[§f16x§7]§8.zip";
     let archive_path = Path::new(path_str);
 
     match find_first_png_in_archive_as_base64(archive_path).await {

@@ -151,7 +151,7 @@ pub async fn upload_profile_images(payload: UploadProfileImagesPayload) -> Resul
         .get_profile_instance_path(profile_uuid)
         .await?;
 
-    let target_sub_dir_name = "NoRiskClientLauncher";
+    let target_sub_dir_name = "CSIMinecraftLauncher";
     // Dynamically determine filename based on image_type and extension
     // Default extension if not found
     let mut extension = ".png".to_string();

@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 pub static LAUNCHER_DIRECTORY: Lazy<ProjectDirs> =
     Lazy::new(
-        || match ProjectDirs::from("gg", "norisk", "NoRiskClientV3") {
+        || match ProjectDirs::from("com", "csi", "MinecraftLauncher") {
             Some(proj_dirs) => proj_dirs,
             None => panic!("Failed to get application directory"),
         },
