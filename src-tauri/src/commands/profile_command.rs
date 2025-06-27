@@ -1373,7 +1373,7 @@ pub async fn export_profile(
         .await
         .map_err(|e| CommandError::from(AppError::Io(e)))?;
 
-    // Sanitize the filename and add .noriskpack extension
+    // Sanitize the filename and add .mrpack extension
     let sanitized_name = sanitize(&params.file_name);
     if sanitized_name.is_empty() {
         return Err(CommandError::from(AppError::Other(
@@ -1382,7 +1382,7 @@ pub async fn export_profile(
     }
 
     // Generate complete filename with extension
-    let noriskpack_filename = format!("{}.csimlpack", sanitized_name);
+    let noriskpack_filename = format!("{}.mrpack", sanitized_name);
 
     // Create full export path
     let export_path = exports_dir.join(&noriskpack_filename);

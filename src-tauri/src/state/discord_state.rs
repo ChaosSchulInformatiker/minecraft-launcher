@@ -9,8 +9,8 @@ use tauri::Manager; // Keep for app_handle.state()
 use tokio::sync::{Mutex, RwLock};
 use uuid::Uuid;
 
-// Discord application ID for NoRiskClient
-const DISCORD_APP_ID: &str = "1237087999104122981"; // Replace with actual Discord application ID
+// Discord application ID for CSI Minecraft
+const DISCORD_APP_ID: &str = "1388250680103403541";
 
 // Different states for Discord Rich Presence
 #[derive(Debug, Clone, PartialEq)]
@@ -258,7 +258,7 @@ impl DiscordManager {
                 });
 
                 activity::Activity::new()
-                    .state("Idling...")
+                    .state("via the CSI Minecraft Launcher")
                     .assets(
                         activity::Assets::new()
                             .large_image(icon)

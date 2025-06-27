@@ -499,15 +499,6 @@ pub async fn toggle_content_from_profile(
                 // We don't return an error here yet, as the final check below will handle it if nothing at all was toggled.
             }
         }
-        Some(profile_utils::ContentType::NoRiskMod) => {
-            log::debug!(
-                "Targeted toggle for NoRiskMod with SHA1: {}",
-                current_sha1_hash
-            );
-            // NoRiskMods are handled differently, not by scanning directories
-            // We don't need to scan any asset types for NoRiskMods
-            // We'll handle this in the future if needed
-        }
         None => {
             // ContentType is None. This case is tricky for optimization.
             // Current "safe" behavior without content_type was to scan all.
@@ -972,15 +963,6 @@ pub async fn install_local_content_to_profile(
                 ))));
             }
         }
-        profile_utils::ContentType::NoRiskMod => {
-            log::error!(
-                "ContentType::NoRiskMod is not supported for local installation via this command. Profile: {}",
-                payload.profile_id
-            );
-            return Err(CommandError::from(AppError::Other(
-                "Local installation of NoRiskMod content type is not supported.".to_string(),
-            )));
-        }
         // Handle any other ContentType variants not explicitly covered, if any exist or are added later.
         _ => {
             log::warn!(
@@ -1158,12 +1140,6 @@ pub async fn switch_content_version(
             datapack_utils::update_datapack_from_modrinth(&profile, &dp_info, &new_version_details)
                 .await
                 .map_err(CommandError::from)
-        }
-        profile_utils::ContentType::NoRiskMod => {
-            log::error!("Switching version for NoRiskMod is not supported via this command.");
-            Err(CommandError::from(AppError::InvalidOperation(
-                "NoRiskMod versions are managed by pack configuration.".to_string(),
-            )))
         }
     }
 }

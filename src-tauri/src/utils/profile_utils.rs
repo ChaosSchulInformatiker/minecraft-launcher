@@ -33,7 +33,6 @@ pub enum ContentType {
     ShaderPack,
     DataPack,
     Mod,
-    NoRiskMod,
 }
 
 impl Default for ContentType {
@@ -196,14 +195,6 @@ async fn get_content_directory(profile: &Profile, content_type: &ContentType) ->
                 .calculate_instance_path_for_profile(profile)?;
             Ok(instance_path.join("mods"))
         }
-        ContentType::NoRiskMod => {
-            // NoRiskMods don't have a physical directory but we return a path for consistency
-            let state = State::get().await?;
-            let instance_path = state
-                .profile_manager
-                .calculate_instance_path_for_profile(profile)?;
-            Ok(instance_path) // Just return the instance path as base
-        }
     }
 }
 
@@ -214,7 +205,6 @@ fn content_type_to_string(content_type: &ContentType) -> &'static str {
         ContentType::ShaderPack => "Shader Pack",
         ContentType::DataPack => "Data Pack",
         ContentType::Mod => "Mod",
-        ContentType::NoRiskMod => "NoRisk Mod",
     }
 }
 
@@ -1914,124 +1904,11 @@ impl LocalContentLoader {
                     .calculate_instance_path_for_profile(&profile)?;
                 vec![instance_path.join("custom_mods")]
             }
-            ContentType::NoRiskMod => {
-                // For NoRisk mods, we don't actually need a physical directory
-                // since these are managed via the NoRisk pack system
-                // Return an empty vector as we'll handle it differently
-                Vec::new()
-            }
         };
 
         let mut preliminary_items: Vec<LocalContentItem> = Vec::new();
 
-        if params.content_type == ContentType::NoRiskMod {
-            // Special handling for NoRisk mods - fetch them from the NoRisk pack system
-            if let Some(pack_id) = &profile.selected_norisk_pack_id {
-                // Get the NoRisk pack manager from the state
-                let state = State::get().await?;
-                let config = state.norisk_pack_manager.get_config().await;
-
-                // Get the resolved pack definition
-                match config.get_resolved_pack_definition(pack_id) {
-                    Ok(pack_def) => {
-                        for norisk_mod in &pack_def.mods {
-                            // Extract fallback version from compatibility target at the beginning
-                            let fallback_version = norisk_mod
-                                .compatibility
-                                .get(&profile.game_version)
-                                .and_then(|game_version_map| {
-                                    game_version_map.get(profile.loader.as_str())
-                                })
-                                .map(|loader_target| loader_target.identifier.clone());
-
-                            // Skip this mod if no fallback version is available
-                            if fallback_version.is_none() {
-                                continue;
-                            }
-
-                            // Create a proper NoriskModIdentifier first so we can reuse it
-                            let norisk_mod_identifier =
-                                crate::state::profile_state::NoriskModIdentifier {
-                                    pack_id: pack_id.clone(),
-                                    mod_id: norisk_mod.id.clone(),
-                                    game_version: profile.game_version.clone(),
-                                    loader: profile.loader.clone(),
-                                };
-
-                            // Determine if the mod is enabled/disabled using the identifier
-                            let is_disabled = profile
-                                .disabled_norisk_mods_detailed
-                                .iter()
-                                .any(|disabled_mod| *disabled_mod == norisk_mod_identifier);
-
-                            // Determine source type string
-                            let source_type_str = match &norisk_mod.source {
-                                crate::integrations::norisk_packs::NoriskModSourceDefinition::Modrinth { .. } => None,
-                                crate::integrations::norisk_packs::NoriskModSourceDefinition::Maven { .. } => Some("maven"),
-                                crate::integrations::norisk_packs::NoriskModSourceDefinition::Url { .. } => Some("url"),
-                                _ => Some("norisk"),
-                            };
-
-                            // Extract Modrinth info if available
-                            let modrinth_info = if let crate::integrations::norisk_packs::NoriskModSourceDefinition::Modrinth { project_id, .. } = &norisk_mod.source {
-                                // For version info we need to look at compatibility
-                                let version_id = norisk_mod.compatibility
-                                    .get(&profile.game_version)
-                                    .and_then(|game_version_map| game_version_map.get(profile.loader.as_str()))
-                                    .map(|loader_target| loader_target.identifier.clone())
-                                    .unwrap_or_else(|| "unknown".to_string());
-
-                                Some(GenericModrinthInfo {
-                                    project_id: project_id.clone(),
-                                    version_id,
-                                    name: norisk_mod.display_name.clone().unwrap_or_else(|| norisk_mod.id.clone()),
-                                    version_number: "".to_string(), // Not directly available
-                                    download_url: None,
-                                })
-                            } else {
-                                None
-                            };
-
-                            // Use the path_utils function to get the mod cache path
-                            let path_str = match crate::utils::path_utils::get_norisk_mod_cache_path(
-                                norisk_mod,
-                                &profile.game_version,
-                                &profile.loader.as_str(),
-                            ) {
-                                Ok(path) => path.to_string_lossy().to_string(),
-                                Err(e) => {
-                                    warn!(
-                                        "Could not get cache path for NoRisk mod {}: {}",
-                                        norisk_mod.id, e
-                                    );
-                                    String::new() // Fallback if path can't be determined
-                                }
-                            };
-
-                            // Create LocalContentItem (using the identifier we created earlier)
-                            preliminary_items.push(LocalContentItem {
-                                filename: norisk_mod.id.clone(),
-                                path_str,
-                                sha1_hash: None,
-                                file_size: 0,
-                                is_disabled,
-                                is_directory: false,
-                                content_type: ContentType::NoRiskMod,
-                                modrinth_info,
-                                source_type: source_type_str.map(|s| s.to_string()),
-                                norisk_info: Some(norisk_mod_identifier),
-                                fallback_version: fallback_version,
-                                id: None,
-                                associated_loader: None,
-                            });
-                        }
-                    }
-                    Err(e) => {
-                        warn!("Failed to get NoRisk pack definition: {}", e);
-                    }
-                }
-            }
-        } else if params.content_type == ContentType::Mod {
+        if params.content_type == ContentType::Mod {
             // First process profile.mods entries (for tracking enabled status)
             for mod_item in &profile.mods {
                 let mut filename = mod_item.file_name_override.clone();
@@ -2179,7 +2056,6 @@ impl LocalContentLoader {
                             || file_name_str.ends_with(".jar.disabled"))
                             && !is_directory
                     }
-                    ContentType::NoRiskMod => false, // We handle NoRisk mods differently, not by scanning directories
                 };
 
                 if is_valid_item {
@@ -2245,11 +2121,6 @@ impl LocalContentLoader {
         }
 
         let mut final_items = preliminary_items;
-
-        // If the content type is NoRiskMod, sort the items by filename for consistent ordering
-        if params.content_type == ContentType::NoRiskMod {
-            final_items.sort_by(|a, b| a.filename.cmp(&b.filename));
-        }
 
         if params.calculate_hashes {
             let mut hash_tasks: Vec<JoinHandle<(usize, std::result::Result<String, AppError>)>> =
